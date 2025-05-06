@@ -107,41 +107,6 @@ def compute_global_nan_mask(ts_files, expected_nroi):
     avg_nan_rate = nan_sum / num_subjects
     return avg_nan_rate
 
-# def impute_and_clean(df, column_names):
-#     placeholder = -9999
-
-#     # Step 1: Pre-fill fully NaN columns with placeholder (we do this to allow imputation)
-#     fully_nan_cols = df.columns[df.isna().all()]
-#     if len(fully_nan_cols) > 0:
-#         logging.warning(
-#             f"{len(fully_nan_cols)} ROIs are fully NaN and will be pre-filled with placeholder ({placeholder}): {list(fully_nan_cols)}"
-#         )
-#         df[fully_nan_cols] = placeholder
-
-#     # Step 2: Fit the imputer on partially missing data.
-#     imputer = SimpleImputer(missing_values=np.nan, strategy="mean")
-#     imputer.fit(df)
-
-#     # Step 3: Replace any remaining NaNs with placeholder.
-#     df_copy = df.replace({np.nan: placeholder})
-
-#     # Step 4: Transform using the fitted imputer.
-#     imputed = imputer.transform(df_copy)
-
-#     # Step 5: Build imputed DataFrame.
-#     imputed_df = pd.DataFrame(imputed, columns=df.columns, index=df.index)
-
-#     # Step 6: Identify any columns still containing NaNs (should be only columns that were completely missing)
-#     if imputed_df.isna().any().any():
-#         subject_global_mean = np.nanmean(imputed_df.values)
-#         imputed_df = imputed_df.fillna(subject_global_mean)
-#         logging.warning("Some ROIs were still NaN after imputation and were filled with subject-global mean.")
-#         print(subject_global_mean)
-
-#     # Step 7: Clean with nilearn.
-#     cleaned = clean(imputed_df.values, detrend=True, standardize=True)
-#     return pd.DataFrame(cleaned, columns=column_names, index=df.index)
-
 def impute_and_clean(df, column_names):
     # Identify which columns are completely missing across time.
     fully_missing_cols = df.columns[df.isna().all()]
