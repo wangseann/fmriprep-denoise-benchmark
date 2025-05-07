@@ -8,10 +8,15 @@ from sklearn.utils import Bunch
 import logging
 import sys
 
+# logging.basicConfig(
+#     level=logging.DEBUG,  # or INFO or another level, as needed
+#     format="%(asctime)s - %(levelname)s - %(message)s",
+#     stream=sys.stdout  # log to standard output
+# )
+
 logging.basicConfig(
-    level=logging.DEBUG,  # or INFO or another level, as needed
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    stream=sys.stdout  # log to standard output
+    level=logging.INFO,          # or logging.WARNING
+     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
 STRATEGY_FILE = "benchmark_strategies.json"
@@ -148,37 +153,22 @@ def fetch_fmriprep_derivative(
     )
 
 
-def get_prepro_strategy(strategy_name=None):
-    """
-    Select a single preprocessing strategy and associated parameters.
-
-    Parameter
-    ---------
-
-    strategy_name : None or str
-        Name of the denoising strategy. See benchmark_strategies.json.
-        Default to None, returns all strategies.
-
-    Return
-    ------
-
-    dict
-        Denosing strategy parameter to pass to load_confounds.
-    """
+def get_prepro_strategy(strategy_name: str | None = None):
+    """Return one or all preprocessing strategies from benchmark_strategies.json."""
     strategy_file = Path(__file__).parent / STRATEGY_FILE
-    with open(strategy_file, "r") as file:
-        benchmark_strategies = json.load(file)
-
-    if isinstance(strategy_name, str) and strategy_name not in benchmark_strategies:
-        raise NotImplementedError(
-            f"Strategy '{strategy_name}' is not implemented. Select from the"
-            f"following: {[*benchmark_strategies]}"
-        )
+    with open(strategy_file) as f:
+        benchmark_strategies = json.load(f)
 
     if strategy_name is None:
-        print("Process all strategies.")
+        # logging.info("Returning all strategies")   # optional
         return benchmark_strategies
-    (f"Process strategy '{strategy_name}'.")
+
+    if strategy_name not in benchmark_strategies:
+        raise NotImplementedError(
+            f"Strategy '{strategy_name}' is not implemented. "
+            f"Available: {list(benchmark_strategies)}"
+        )
+    # logging.info("Returning strategy '%s'", strategy_name)   # optional
     return {strategy_name: benchmark_strategies[strategy_name]}
 
 

@@ -21,8 +21,8 @@ cd /home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/halfpipe_to_de
 #     --nroi 434 
 
 python transition_timeseries_imputation.py \
-    --input_dir /home/seann/scratch/halfpipe_test/test15/derivatives_3.24.2025/halfpipe \
-    --output_dir /home/seann/scratch/halfpipe_test/test15/derivatives_3.24.2025/denoise_0.8subjectthreshold \
+    --input_dir /home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives \
+    --output_dir /home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/denoise \
     --task pixar \
     --space MNI152NLin2009cAsym \
     --nroi 434 \
