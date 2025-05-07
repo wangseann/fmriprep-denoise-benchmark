@@ -133,9 +133,6 @@ def main():
     # Get the "denoise" directory from the input path
     denoise_dir = input_path
 
-    # # In case the input is a deeper file or folder (e.g. sub-XXX), move up until we hit "denoise"
-    # while denoise_dir.name != "denoise" and denoise_dir != denoise_dir.parent:
-    #     denoise_dir = denoise_dir.parent
 
     # Now build the full path to final_roi_labels.csv
     roi_label_csv = denoise_dir / "final_roi_labels.csv"
@@ -304,9 +301,9 @@ def main():
 
         tmp = tempfile.NamedTemporaryFile(delete=False, dir=output_file.parent)
         merged.to_csv(tmp.name, sep="\t")
-        tmp.close()                              # (1) good hygiene
+        tmp.close()                              
         os.replace(tmp.name, output_file)        # atomic swap
-        fcntl.flock(lock_fd, fcntl.LOCK_UN)      # (2) optional but harmless
+        fcntl.flock(lock_fd, fcntl.LOCK_UN)      
 
     logging.info("Final metrics saved to %s", output_file)
 
