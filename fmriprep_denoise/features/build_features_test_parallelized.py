@@ -99,6 +99,7 @@ def _select_strategy_by_index(idx: int):
         raise ValueError(f"strategy_index {idx} out of range 0‑{len(real_keys)-1}")
     return get_prepro_strategy(real_keys[idx])        
 
+
 def main():
     """Main function."""
 
@@ -149,6 +150,21 @@ def main():
                  if k.lower() != "process all strategies."]
     all_keys  = real_keys
 
+
+    def _order_columns(df):
+        """Return *df* with columns ordered by all_keys (single‑ or multi‑index)."""
+        if isinstance(df.columns, pd.MultiIndex):              # QCFC
+            order_map = {s: i for i, s in enumerate(all_keys)}
+            def sort_key(col):
+                group, label = col
+                strat = label.split("_", 1)[0]
+                return (group, order_map.get(strat, 1e9), label)
+            return df[sorted(df.columns, key=sort_key)]
+        else:                                                  # connectome, modularity
+            return df.reindex(columns=[c for c in all_keys if c in df.columns],
+                            copy=False)
+
+
     if args.strategy_index is None:
         strategy_names = {k: get_prepro_strategy(k)[k] for k in real_keys}
     else:
@@ -162,7 +178,7 @@ def main():
     logging.debug("Metric option selected: %s", metric_option)
 
     collection_metric = []
-    used_strategy_names = []  # track only those that succeed (for 'connectome' case)
+    used_strategy_names = []  
 
     for strategy_name in strategy_names.keys():
         file_pattern = f"atlas-{atlas}_nroi-{dimension}_desc-{strategy_name}"
@@ -193,7 +209,8 @@ def main():
         print("\tLoaded connectomes...")
 
         if metric_option == "connectome":
-            cur_strategy_average = connectome.mean(axis=0)
+            cur_strategy_average = (connectome.mean(axis=0)
+                                    .to_frame(name=strategy_name))   # <── add this
             collection_metric.append(cur_strategy_average)
             used_strategy_names.append(strategy_name)
             logging.debug("Average connectome computed for strategy %s", strategy_name)
@@ -249,8 +266,11 @@ def main():
             logging.error("Invalid metric option: %s", metric_option)
             raise ValueError
 
+
     collection_metric = pd.concat(collection_metric, axis=1)
     logging.debug("Concatenated collection_metric with shape: %s", collection_metric.shape)
+
+    collection_metric = _order_columns(collection_metric)
 
     if metric_option == "connectome":
         collection_metric.columns = used_strategy_names
@@ -259,13 +279,6 @@ def main():
         print("collection_metric preview:")
         print(collection_metric.head())
 
-    if args.strategy_index is not None:          # array mode: append only
-        pass  # merged later
-    else:                                        # sequential mode: we are already in order
-        collection_metric = collection_metric.reindex(
-            columns=[c for c in all_keys if c in collection_metric.columns],
-            copy=False,
-        )
         
     output_file = output_path / f"dataset-{dataset}_atlas-{atlas}_nroi-{dimension}_{metric_option}.tsv"
     lock_path = output_file.with_suffix(output_file.suffix + ".lock")
@@ -274,25 +287,26 @@ def main():
         fcntl.flock(lock_fd, fcntl.LOCK_EX)
 
         if output_file.exists():
-            logging.info("Output file exists. Loading and merging.")
-            prev = pd.read_csv(output_file, sep="\t", index_col=0)
+            header_rows = [0, 1] if metric_option == "qcfc" else 0
+            prev = pd.read_csv(output_file, sep="\t", index_col=0,
+                            header=header_rows)
 
-            # ---------- NEW: drop any columns we are about to add ------------
             overlap = [c for c in collection_metric.columns if c in prev.columns]
             if overlap:
                 logging.info("Replacing existing columns: %s", overlap)
                 prev = prev.drop(columns=overlap)
-            # -----------------------------------------------------------------
 
             merged = prev.join(collection_metric, how="outer")
         else:
-            logging.info("Output file does not exist. Creating new file.")
             merged = collection_metric
+
+        merged = _order_columns(merged)          # keep canonical order
 
         tmp = tempfile.NamedTemporaryFile(delete=False, dir=output_file.parent)
         merged.to_csv(tmp.name, sep="\t")
-        os.replace(tmp.name, output_file)  # atomic replace
-        fcntl.flock(lock_fd, fcntl.LOCK_UN)
+        tmp.close()                              # (1) good hygiene
+        os.replace(tmp.name, output_file)        # atomic swap
+        fcntl.flock(lock_fd, fcntl.LOCK_UN)      # (2) optional but harmless
 
     logging.info("Final metrics saved to %s", output_file)
 
