@@ -16,14 +16,14 @@ import numpy as np
 from sklearn.impute import SimpleImputer
 from nilearn.signal import clean
 
-FEATURE_RENAME_MAP = {
-    "corrMatrixCompCor": "compcor",
-    "corrMatrixICA": "aroma",
-    "corrMatrixMotion": "simple",
-    "corrMatrixMotionGSR": "simple+gsr",
-    "corrMatrixScrubGSR": "scrubbing.5+gsr",
-    "corrMatrixScrub": "scrubbing.5",
-}
+# FEATURE_RENAME_MAP = {
+#     "corrMatrixCompCor": "compcor",
+#     "corrMatrixICA": "aroma",
+#     "corrMatrixMotion": "simple",
+#     "corrMatrixMotionGSR": "simple+gsr",
+#     "corrMatrixScrubGSR": "scrubbing.5+gsr",
+#     "corrMatrixScrub": "scrubbing.5",
+# }
 
 # FEATURE_RENAME_MAP = {
 #     "baseline": "baseline",
@@ -34,6 +34,16 @@ FEATURE_RENAME_MAP = {
 #     "scrubbing5Gsr": "scrubbing.5+gsr",
 #     "scrubbing5": "scrubbing.5",
 # }
+
+FEATURE_RENAME_MAP = {
+    "corrMatrix5": "baseline",
+    "corrMatrix": "compcor",
+    "aroma": "aroma",
+    "corrMatrix3": "simple",
+    "corrMatrix4": "simple+gsr",
+    "corrMatrix2": "scrubbing.5+gsr",
+    "corrMatrix1": "scrubbing.5",
+}
 
 
 def parse_args():
