@@ -2,14 +2,14 @@
 ###############################################################################
 # metrics_array.sh – one task per (metric, strategy)
 ###############################################################################
-#SBATCH --job-name=metrics_%A_%a
+#SBATCH --job-name=dev_metrics_%A_%a
 #SBATCH --account=def-cmoreau
 #SBATCH --time=06:00:00
 #SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=8G
-#SBATCH --array=0-13                 # 3 metrics × 7 strategies
-#SBATCH --output=/home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/generate_metrics/slurm/logs/parallelized.%a.out
-#SBATCH --error=/home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/generate_metrics/slurm/logs/parallelized.%a.err
+#SBATCH --array=14-20                 # 3 metrics × 7 strategies
+#SBATCH --output=/home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/generate_metrics/slurm/logs/parallelized_dev.%a.out
+#SBATCH --error=/home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/generate_metrics/slurm/logs/parallelized_dev.%a.err
 ###############################################################################
 
 set -euo pipefail
@@ -26,13 +26,24 @@ STRAT_INDEX=$((flat % N_STRATS))
 
 echo "Task $flat  metric=$METRIC  strategy_index=$STRAT_INDEX"
 
+# python /home/seann/scratch/denoise/fmriprep-denoise-benchmark/fmriprep_denoise/features/build_features_test_parallelized.py \
+#   /home/seann/scratch/halfpipe_test/test15/derivatives/denoise_0.8subjectthreshold \
+#   /home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-4.27.25_parallelTest \
+#   --dataset ds000228 \
+#   --fmriprep_ver fmriprep-20.2.7 \
+#   --atlas Schaefer2018 \
+#   --dimension 426 \
+#   --qc minimal \
+#   --metric "$METRIC" \
+#   --strategy_index "$STRAT_INDEX"
+
 python /home/seann/scratch/denoise/fmriprep-denoise-benchmark/fmriprep_denoise/features/build_features_test_parallelized.py \
-  /home/seann/scratch/halfpipe_test/test15/derivatives/denoise_0.8subjectthreshold \
+  /home/seann/scratch/halfpipe_test/test14/derivatives/denoise_0.8subjectthreshold \
   /home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-4.27.25_parallelTest \
   --dataset ds000228 \
-  --fmriprep_ver fmriprep-20.2.7 \
+  --fmriprep_ver fmriprep-25.0.0 \
   --atlas Schaefer2018 \
-  --dimension 426 \
+  --dimension 424 \
   --qc minimal \
   --metric "$METRIC" \
   --strategy_index "$STRAT_INDEX"

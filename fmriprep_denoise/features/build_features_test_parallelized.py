@@ -215,13 +215,41 @@ def main():
 
         elif metric_option == "modularity":
             logging.info("Computing modularity using louvain_modularity for strategy %s", strategy_name)
-            inner_n = 4 if args.strategy_index is None else 1
-            qs = Parallel(n_jobs=inner_n)(delayed(louvain_modularity)(vect) for vect in connectome.values.tolist())
+
+            # Debug log to inspect the structure of connectome
+            logging.debug("Connectome structure before slicing: %s", connectome.head())
+            logging.debug("Connectome shape before slicing: %s", connectome.shape)
+
+            # Check if connectome is empty
+            if connectome.empty:
+                logging.warning("Connectome is empty for strategy %s. Skipping modularity computation.", strategy_name)
+                continue
+
+            # Limit to the first 10 subjects for testing purposes
+            connectome = connectome.iloc[:2]
+            logging.info("Limiting modularity computation to the first 10 subjects for testing.")
+            logging.debug("Connectome shape after slicing: %s", connectome.shape)
+
+            # Fixed number of jobs for parallelization (same as original implementation)
+            n_jobs = 4
+
+            # Log the start of the modularity computation
+            logging.info("Starting modularity computation for %d subjects", len(connectome))
+
+            # Compute modularity for each subject in parallel
+            qs = Parallel(n_jobs=n_jobs)(
+                delayed(louvain_modularity)(vect) for idx, vect in enumerate(connectome.values.tolist())
+            )
+
+            # Create a DataFrame for modularity results
             modularity = pd.DataFrame(
                 qs, columns=[strategy_name], index=connectome.index
             )
             collection_metric.append(modularity)
-            logging.debug("Modularity computed for strategy %s", strategy_name)
+
+            # Log the completion of modularity computation
+            logging.info("Modularity computation completed for strategy %s", strategy_name)
+            logging.debug("Modularity results: %s", modularity.head())
             print("\tModularity...")
 
         elif metric_option == "qcfc":
