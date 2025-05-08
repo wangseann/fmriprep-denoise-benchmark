@@ -20,9 +20,18 @@ cd /home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/halfpipe_to_de
 #     --space MNI152NLin2009cAsym \
 #     --nroi 434 
 
+# python transition_timeseries_imputation.py \
+#     --input_dir /home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives \
+#     --output_dir /home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/denoise \
+#     --task pixar \
+#     --space MNI152NLin2009cAsym \
+#     --nroi 434 \
+#     --atlas /home/seann/projects/def-cmoreau/All_user_common_folder/atlas/atlas_enigma/atlas-Schaefer2018Combined_dseg.tsv \
+#     --nan_threshold 0.5
+
 python transition_timeseries_imputation.py \
-    --input_dir /home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives \
-    --output_dir /home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/denoise \
+    --input_dir /home/seann/scratch/halfpipe_test/25-04-17_ds228_halfpipe-1.2.3_fmriprep-20.2.7/derivatives \
+    --output_dir /home/seann/scratch/halfpipe_test/25-04-17_ds228_halfpipe-1.2.3_fmriprep-20.2.7/derivatives/denoise \
     --task pixar \
     --space MNI152NLin2009cAsym \
     --nroi 434 \
