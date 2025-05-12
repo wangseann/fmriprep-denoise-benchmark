@@ -149,8 +149,8 @@ We can now generate the summary.tsv file for our metrics and selected quality co
 
 1. INSIDE /path/to/fmriprep_denoise/visualization/summarise_metadata.py, please adjust the following. 
 
-<pre><code>
 #hardcoded in summarise_metadata.py
+<pre><code>
 qc_names = ["stringent"] #adjust for your QC level
 datasets = ["ds000228"] #adjust for your dataset name
 fmriprep_versions = ["fmriprep-20.2.7"] #adjust for your fmriprep version
@@ -159,8 +159,9 @@ fmriprep_versions = ["fmriprep-20.2.7"] #adjust for your fmriprep version
 
 2. INSIDE /path/to/fmriprep_denoise/visualization/utils.py, please adjust the following. 
 
+#please ensure these strategies match those found in benchmark_strategies.json
 <pre><code>
-GRID_LOCATION = { #please ensure these strategies match those found in benchmark_strategies.json
+GRID_LOCATION = { 
     (0, 0): "baseline",
     (0, 2): "simple",
     (0, 3): "simple+gsr",
@@ -172,13 +173,13 @@ GRID_LOCATION = { #please ensure these strategies match those found in benchmark
     (2, 1): "aroma",
 }
 </code></pre>
-
-<pre><code>
 #hardcoded in utils.py
+Please adjust these paths to point to your own rois_dropped.csv in the /deriatives/denoise folder. Its okay to only have one path if only testing 1 version.
+<pre><code>
 excluded_rois_paths = {
     "fmriprep-25.0.0": "/home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/denoise/rois_dropped.csv", 
     "fmriprep-20.2.7": "/home/seann/scratch/halfpipe_test/25-04-17_ds228_halfpipe-1.2.3_fmriprep-20.2.7/derivatives/denoise/rois_dropped.csv",
-} #please adjust these paths to point to your own rois_dropped.csv in the /deriatives/denoise folder. Its okay to only have one path if only testing 1 version.
+}
 </code></pre>
 
 3. Required for inputs:
@@ -197,9 +198,8 @@ excluded_rois_paths = {
 We can now generate figures to visualize our metrics. 
 
 1. INSIDE /path/to/scripts/make_manuscript_figures.py
-
-<pre><code>
 #please adjust these hardcoded settings for your workflow
+<pre><code>
 group_order = {
     "ds000228": ["adult", "child"]
 }
@@ -210,20 +210,21 @@ fmriprep_version = "fmriprep-25.0.0"
 excluded_strategies = []#["compcor", "aroma"]
 </code></pre>
 
+#please adjust path_root to /path/to/your/outputs/denoise-metrics
 <pre><code>
 
-#please adjust path_root to /path/to/your/outputs/denoise-metrics
 
 if __name__ == "__main__":
   path_root = Path("/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-5.08.25") 
  
 </code></pre>
 
+#please adjust the strategy_order to match your strategy names
 <pre><code>
- #please adjust the strategy_order to match your strategy names
 strategy_order = ["scrubbing.5+gsr","simple+gsr","compcor","scrubbing.5","simple","aroma","baseline"]
 
 </code></pre>
 
 
+#You should now have generated the manuscript figures for the denoising benchmark metrics in /path/to/your/outputs. 
 
