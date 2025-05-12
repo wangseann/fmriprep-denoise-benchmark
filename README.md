@@ -102,5 +102,37 @@ Once finished, you can run the slurm script from the /scripts/halfpipe_to_denois
 
 We must now generated the confounds_phenotype.tsv and movement_phenotype.tsv files for our dataset.
 
+NOTE: Correct calculation of degrees of freedom loss for certain denoising strategies require specific files. Some versions of HALFpipe may not provide all necessary files, but future versions will address this.
+- Scrubbing strategies requires _res-2_desc-preproc_bold.nii.gz subject files from fmriprep derivatives (sometimes already outputted by HALFpipe)
+- Aroma strategies require _desc-aroma_timeseries.tsv subject files from HALFpipe derivatives (outputted with HALFpipe 1.2.3dev).
+
+Required for inputs: Please adjust these flags passed to the function call in the slurm_meta_confounds.sh script.
+1. output path: /path/to/outputs/denoise-metrics/dataset/fmriprep-version (eg. /path/to/outputs/denoise-metrics-atlas.5-5.08.25/ds000228/fmriprep-25.0.0)
+2. --fmriprep_path= /path/to/your/halfpipe/derivatives/fmriprep 
+3. --dataset_name=<place dataset name here> (eg. ds000228)
+4. --specifier=<place specifier here> (eg. task-pixar for sub-pixar001_task-pixar_desc-confounds_timeseries.tsv in fmriprep derivatives folder)
+5. --participants_tsv /path/to/your/dataset/participants.tsv
+
+
+## Step 4: Run metrics_heavy_resource_parallelized.sh
+
+We can now generate the denoising benchmark metrics for each strategy. 
+
+Required for inputs:
+
+
+## Step 5: Run slurm_summarise_metadata.sh
+
+We can now generate the summary.tsv file for our metrics and selected quality control (QC) level.
+
+Required for inputs:
+
+
+## Step 6: Run slurm_make_manuscript_figures.sh
+
+We can now generate figures to visualize our metrics. 
+
+Required for inputs:
+
 
 
