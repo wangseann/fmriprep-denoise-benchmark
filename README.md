@@ -32,49 +32,18 @@ Some useful part of the code has been extracted and further reviewed within SIME
 5. Run slurm_summarise_metadata.sh
 6. Run slurm_make_manuscript_figures.sh
 
-   
-```bash
-git clone --recurse-submodules https://github.com/SIMEXP/fmriprep-denoise-benchmark.git
-cd fmriprep-denoise-benchmark
-virtualenv env
-source env/bin/activate
-pip install -r binder/requirements.txt
-pip install .
-make data
-make book
-```
+<pre><code>
 
-<pre><code class="language-python">
-```python
-from fmriprep_denoise.pipeline import run_denoising_pipeline
-
-# Example: Run denoising on HALFpipe output for a single subject
-run_denoising_pipeline(
-    input_dir="/path/to/HALFpipe/output",
-    subject_id="sub-001",
-    strategy="compcor"
-)
-```
 </code></pre>
 
+
 ## Dataset structure
-
-- `binder/` contains files to configure for neurolibre and/or binder hub.
-
-- `content/` is the source of the JupyterBook.
-
-- `data/` is reserved to store data for running analysis.
-  To build the book, one will need all the metrics from the study.
-  The metrics are here:
-  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7764979.svg)](https://doi.org/10.5281/zenodo.7764979)
-  The data will be automatically downloaded to `content/notebooks/data`.
-  You can by pass this step through accessing the Neurolibre preprint [![DOI](https://neurolibre.org/papers/10.55458/neurolibre.00012/status.svg)](https://doi.org/10.55458/neurolibre.00012)!
 
 - Custom code is located in `fmriprep_denoise/`. This project is installable.
 
 - Preprocessing SLURM scripts, and scripts for creating figure for manuscript are in `scripts/`.
 
-## Quick Start
+
 ## Step 1: Generate Outputs from HALFpipe
 
 This workflow has been written to accept derivative files from HALFpipe. Before running this code, please ensure you have run HALFpipe on your dataset successfully with all your desired denoising strategies. 
@@ -88,23 +57,35 @@ We will now begin running the workflow on HALFpipe outputs.
 
 First, we must convert the HALFpipe generated timeseries matrices into the format expected by our denoising workflow by running the slurm_transition_timeseries.sh script. 
 
+
 Required for inputs: Please adjust these flags passed to the function call in the slurm_transition_timeseries.sh script. 
+
+<pre><code>
 1. --input_dir  /path/to/your/halfpipe/derivatives
+
 2. --output_dir /path/to/your/halfpipe/derivatives/denoise
-3. --task <place name of your task here> (eg. pixar for sub-pixar001_task-pixar_feature-corrMatrix_atlas-schaefer400_timeseries.tsv)
-4. --space <place name of your template space> (eg. MNI152NLin2009cAsym for sub-pixar001_task-pixar_space-MNI152NLin2009cAsym_res-2_desc-preproc_bold.nii.gz)
-5. --nroi <place number of ROIs in your atlas> (eg. 434 for atlas-Schaefer2018Combined_dseg.nii.gz)
-6. --atlas /path/to/your/atlas.tsv (eg. /atlas/atlas_enigma/atlas-Schaefer2018Combined_dseg.tsv)
-7. --nan_threshold <place desired cut off threshold for excluding ROIs> (eg. default set to 0.5)
+   
+4. --task <place name of your task here> (eg. pixar for sub-pixar001_task-pixar_feature-corrMatrix_atlas-schaefer400_timeseries.tsv)
+   
+5. --space <place name of your template space> (eg. MNI152NLin2009cAsym for sub-pixar001_task-pixar_space-MNI152NLin2009cAsym_res-2_desc-preproc_bold.nii.gz)
+   
+6. --nroi <place number of ROIs in your atlas> (eg. 434 for atlas-Schaefer2018Combined_dseg.nii.gz)
+   
+7. --atlas /path/to/your/atlas.tsv (eg. /atlas/atlas_enigma/atlas-Schaefer2018Combined_dseg.tsv)
+   
+8. --nan_threshold <place desired cut off threshold for excluding ROIs> (eg. default set to 0.5)
+</code></pre>
 
 Please adjust this before running:
 1. In the /fmriprep-denoise-benchmark/scripts/halfpipe_to_denoise/transition_timeseries_imputation.py file, please adjust the FEATURE_RENAME_MAP to reflect the naming of your denoising strategies.
 eg. If you ran HALFpipe from the user manual, your FEATURE_RENAME_MAP should be adjusted to this:
-- FEATURE_RENAME_MAP = {
+<pre><code>
+FEATURE_RENAME_MAP = {
     "corrMatrix1": "compcor",
     "corrMatrix3": "scrubbing.5+gsr",
     "corrMatrix2": "scrubbing.5",
 }
+</code></pre>
 
 Please adjust the SBATCH flags to reflect your account/allocation at the top of the slurm_transition_timeseries.sh script.
 
@@ -120,11 +101,17 @@ NOTE: Correct calculation of degrees of freedom loss for certain denoising strat
 - Aroma strategies require _desc-aroma_timeseries.tsv subject files from HALFpipe derivatives (outputted with HALFpipe 1.2.3dev).
 
 Required for inputs: Please adjust these flags passed to the function call in the slurm_meta_confounds.sh script.
+<pre><code>
 1. output path: /path/to/outputs/denoise-metrics/dataset/fmriprep-version (eg. /path/to/outputs/denoise-metrics-atlas.5-5.08.25/ds000228/fmriprep-25.0.0)
+ 
 2. --fmriprep_path= /path/to/your/halfpipe/derivatives/fmriprep 
+ 
 3. --dataset_name=<place dataset name here> (eg. ds000228)
+ 
 4. --specifier=<place specifier here> (eg. task-pixar for sub-pixar001_task-pixar_desc-confounds_timeseries.tsv in fmriprep derivatives folder)
+ 
 5. --participants_tsv /path/to/your/dataset/participants.tsv
+</code></pre>
 
 Please also ensure that benchmark_strategies.json contains all the denoising strategies you desire to test. 
 
@@ -136,20 +123,107 @@ This script will calculate connectome, modularity, and QCFC metrics for all deno
 
 Required for inputs: 
 
+In the slurm script:
+<pre><code>
+N_STRATS = <place number of denoising strategies that you ran here> (eg. 3 if running from HALFpipe manual, can be higher like 9)
+
+SBATCH --array=<place 0 - (N_STRATS*METRICS)-1 here> (eg. 9 x 3 = 27, array = 0-26)
+</code></pre>
+In the python function call:
+<pre><code>
+1. Please adjust python script path for your codebase.
+2. Please adjust denoising timeseries folder path for your codebase (eg. /path/to/your/halfpipe/derivatives/denoise
+3. Please adjust your output path (eg. /path/to/outputs/denoise-metrics)
+4. --dataset <place dataset name here> (eg. ds000228)
+5. --fmriprep_ver <place fmriprep version here> (eg. fmriprep-20.2.7)
+6. --atlas <place atlas name here> (eg. schaefer400)
+7. --dimension <place number of rois here> (eg. you can find this as the number of rows minus 1 in the final_roi_label.csv file found in /path/to/your/halfpipe/derivatives/denoise)
+8. --qc <place desired QC level here> (eg. minimal or stringent or None)
+</code></pre>
+
 
 
 ## Step 5: Run slurm_summarise_metadata.sh
 
 We can now generate the summary.tsv file for our metrics and selected quality control (QC) level.
 
-Required for inputs:
+1. INSIDE /path/to/fmriprep_denoise/visualization/summarise_metadata.py, please adjust the following. 
+
+<pre><code>
+#hardcoded in summarise_metadata.py
+qc_names = ["stringent"] #adjust for your QC level
+datasets = ["ds000228"] #adjust for your dataset name
+fmriprep_versions = ["fmriprep-20.2.7"] #adjust for your fmriprep version
+
+</code></pre>
+
+2. INSIDE /path/to/fmriprep_denoise/visualization/utils.py, please adjust the following. 
+
+<pre><code>
+GRID_LOCATION = { #please ensure these strategies match those found in benchmark_strategies.json
+    (0, 0): "baseline",
+    (0, 2): "simple",
+    (0, 3): "simple+gsr",
+    (1, 0): "simple+wmcsf",
+    (1, 1): "scrubbing.5",
+    (1, 2): "scrubbing.5+gsr",
+    (1, 3): "scrubbing.5+wmcsf",
+    (2, 0): "compcor",
+    (2, 1): "aroma",
+}
+</code></pre>
+
+<pre><code>
+#hardcoded in utils.py
+excluded_rois_paths = {
+    "fmriprep-25.0.0": "/home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/denoise/rois_dropped.csv", 
+    "fmriprep-20.2.7": "/home/seann/scratch/halfpipe_test/25-04-17_ds228_halfpipe-1.2.3_fmriprep-20.2.7/derivatives/denoise/rois_dropped.csv",
+} #please adjust these paths to point to your own rois_dropped.csv in the /deriatives/denoise folder. Its okay to only have one path if only testing 1 version.
+</code></pre>
+
+3. Required for inputs:
+   
+<pre><code>
+1. input path: /path/to/your/outputs/denoise-metrics
+2. --fmriprep_version <place fmriprep version here> (eg. fmriprep-20.2.7)
+</code></pre>
+3. --dataset_name <place dataset name here> (eg. ds000228)
+4. --qc <place desired QC level here> (eg. minimal or stringent or None)
+</code></pre>
 
 
 ## Step 6: Run slurm_make_manuscript_figures.sh
 
 We can now generate figures to visualize our metrics. 
 
-Required for inputs:
+1. INSIDE /path/to/scripts/make_manuscript_figures.py
+
+<pre><code>
+#please adjust these hardcoded settings for your workflow
+group_order = {
+    "ds000228": ["adult", "child"]
+}
+datasets = ["ds000228"]
+datasets_baseline = {"ds000228": "adult"}
+criteria_name = "stringent"
+fmriprep_version = "fmriprep-25.0.0"
+excluded_strategies = []#["compcor", "aroma"]
+</code></pre>
+
+<pre><code>
+
+#please adjust path_root to /path/to/your/outputs/denoise-metrics
+
+if __name__ == "__main__":
+  path_root = Path("/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-5.08.25") 
+ 
+</code></pre>
+
+<pre><code>
+ #please adjust the strategy_order to match your strategy names
+strategy_order = ["scrubbing.5+gsr","simple+gsr","compcor","scrubbing.5","simple","aroma","baseline"]
+
+</code></pre>
 
 
 
