@@ -39,6 +39,12 @@ ATLAS_METADATA = {
         "template": "MNI152NLin6Asym",
         "resolution": 2,
         "dimensions": [434],
+    },
+    "schaefer400": {
+        "atlas": "Schaefer2018Combined",
+        "template": "MNI152NLin6Asym",
+        "resolution": 2,
+        "dimensions": [434],
     }
 }
 

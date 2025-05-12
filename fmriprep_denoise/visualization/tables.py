@@ -1,7 +1,7 @@
 import pandas as pd
 
 # changed to match json 
-fd2label = {0.5: "scrubbing.5", 0.2: "scrubbing.2"}
+fd2label = {0.5: "scrubbing.5", 0.2: "scrubbing.5"}
 
 # fd2label = {0.1: "corrMatrixScrub", 0.2: "corrMatrixScrubGSR", 0.3: "corrMatrixMotion", 0.4: "corrMatrixMotionGSR", 0.5: "corrMatrixCompCor", 0.6: "corrMatrixICA"}
 

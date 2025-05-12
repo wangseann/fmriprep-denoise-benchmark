@@ -20,7 +20,7 @@ cd /home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/halfpipe_to_de
 python visualize_final_shape.py \
     --atlas_img /home/seann/projects/def-cmoreau/All_user_common_folder/atlas/atlas_enigma/atlas-Schaefer2018Combined_dseg.nii.gz \
     --atlas_tsv /home/seann/projects/def-cmoreau/All_user_common_folder/atlas/atlas_enigma/atlas-Schaefer2018Combined_dseg.tsv \
-    --exclusion_csv /home/seann/scratch/halfpipe_test/test15/derivatives/denoise_0.8subjectthreshold/final_roi_labels.csv \
-    --global_impute_csv /home/seann/scratch/halfpipe_test/test15/derivatives/denoise_0.8subjectthreshold/roi_global_impute_counts.csv \
-    --output /home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/halfpipe_to_denoise/visualize_final_shape.png \
-    --title "Final ROIs for 1.2.3lts"
+    --exclusion_csv /home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/denoise/final_roi_labels.csv \
+    --global_impute_csv /home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/denoise/roi_global_impute_counts.csv \
+    --output /home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/halfpipe_to_denoise/visualize_rois_1.2.3dev.png \
+    --title "Final ROIs for 1.2.3dev DVARS-corrected" \

@@ -107,7 +107,7 @@ cd /home/seann/scratch/denoise/fmriprep-denoise-benchmark/fmriprep_denoise/featu
 # done
 
 
-find /home/seann/scratch/halfpipe_test/test15/derivatives/fmriprep -type f -name "*_res-2_desc-preproc_bold.nii.gz" | while read file; do
+find /home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/fmriprep -type f -name "*_res-2_desc-preproc_bold.nii.gz" | while read file; do
     # Remove _res-2 from the file name to construct the expected name
     target=$(echo "$file" | sed 's/_res-2//')
     # Create the symlink only if the target doesn't already exist
@@ -145,8 +145,8 @@ done
 
 # Call the updated script that relies only on confounds files.
 python calculate_degrees_of_freedom_test_noboldpreproc_aromafix.py \
-    /home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-4.27.25/ds000228/fmriprep-20.2.7 \
-    --fmriprep_path=/home/seann/scratch/halfpipe_test/test15/derivatives/fmriprep \
+    /home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-5.08.25/ds000228/fmriprep-25.0.0 \
+    --fmriprep_path=/home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/fmriprep \
     --dataset_name=ds000228 \
     --specifier=task-pixar \
     --participants_tsv /home/seann/projects/def-cmoreau/All_user_common_folder/datasets/ds000228/participants.tsv

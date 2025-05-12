@@ -23,18 +23,18 @@ logger = logging.getLogger(__name__)
 fixed_dataset = "ds000228"
 datasets = [fixed_dataset]  # Keep as list for function calls
 fmriprep_versions = ["fmriprep-20.2.7", "fmriprep-25.0.0"]
-criteria_name = "minimal"
+criteria_name = "stringent"
 excluded_strategies = []
 
 # Paths
-path_root = Path("/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-4.24.25")
+path_root = Path("/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-5.08.25")
 output_dir = Path(__file__).parents[1] / "outputs1"
 output_dir.mkdir(parents=True, exist_ok=True)
 
 # Utility
 strategy_order = list(utils.GRID_LOCATION.values())
 # strategy_order = [s for s in strategy_order if s not in excluded_strategies]
-strategy_order = ["scrubbing.5+gsr","simple+gsr","compcor","scrubbing.5","simple","aroma","baseline"]
+strategy_order = ["scrubbing.5+gsr","simple+gsr","compcor","scrubbing.5","simple","aroma","baseline", "scrubbing.5+wmcsf","simple+wmcsf"]
 
 # Plotting function for Loss vs Quality
 def plot_loss_vs_quality(data, output_dir, version_filter):

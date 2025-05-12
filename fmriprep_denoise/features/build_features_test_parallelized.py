@@ -225,10 +225,10 @@ def main():
                 logging.warning("Connectome is empty for strategy %s. Skipping modularity computation.", strategy_name)
                 continue
 
-            # Limit to the first 10 subjects for testing purposes
-            connectome = connectome.iloc[:2]
-            logging.info("Limiting modularity computation to the first 10 subjects for testing.")
-            logging.debug("Connectome shape after slicing: %s", connectome.shape)
+            # # Limit to the first 10 subjects for testing purposes
+            # connectome = connectome.iloc[:2]
+            # logging.info("Limiting modularity computation to the first 10 subjects for testing.")
+            # logging.debug("Connectome shape after slicing: %s", connectome.shape)
 
             # Fixed number of jobs for parallelization (same as original implementation)
             n_jobs = 4

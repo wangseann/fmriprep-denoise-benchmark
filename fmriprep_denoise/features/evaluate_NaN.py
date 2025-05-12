@@ -255,7 +255,7 @@ def main():
     logging.info("Version A output path: %s", output_path_A)
 
     # Load full ROI list and atlas coordinates.
-    atlas_tsv = f"/home/seann/projects/def-cmoreau/All_user_common_folder/atlas/atlas_enigma/atlas-{args.atlas}Combined_dseg.tsv"
+    atlas_tsv = f"/home/seann/projects/def-cmoreau/All_user_common_folder/atlas/atlas_enigma/atlas-Schaefer2018Combined_dseg.tsv"
     full_roi_list = load_full_roi_list(atlas_tsv)
     logging.info("Loaded full ROI list with %d ROIs.", len(full_roi_list))
     print("Number of ROIs:", len(full_roi_list))

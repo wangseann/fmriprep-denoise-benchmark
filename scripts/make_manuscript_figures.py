@@ -40,7 +40,7 @@ group_order = {
 }
 datasets = ["ds000228"]
 datasets_baseline = {"ds000228": "adult"}
-criteria_name = "minimal"
+criteria_name = "stringent"
 fmriprep_version = "fmriprep-25.0.0"
 excluded_strategies = []#["compcor", "aroma"]
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     # path_root = Path(__file__).parents[1] / "data" / \
     #     "fmriprep-denoise-benchmark" / "denoise-metrics"
 
-    path_root = Path("/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-4.27.25")
+    path_root = Path("/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-5.08.25")
     strategy_order = list(utils.GRID_LOCATION.values())
     strategy_order = [s for s in strategy_order if s not in excluded_strategies]
 
