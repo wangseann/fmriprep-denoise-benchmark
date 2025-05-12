@@ -44,6 +44,19 @@ make data
 make book
 ```
 
+<pre><code class="language-python">
+```python
+from fmriprep_denoise.pipeline import run_denoising_pipeline
+
+# Example: Run denoising on HALFpipe output for a single subject
+run_denoising_pipeline(
+    input_dir="/path/to/HALFpipe/output",
+    subject_id="sub-001",
+    strategy="compcor"
+)
+```
+</code></pre>
+
 ## Dataset structure
 
 - `binder/` contains files to configure for neurolibre and/or binder hub.
@@ -122,6 +135,7 @@ We can now generate the denoising benchmark metrics for each strategy.
 This script will calculate connectome, modularity, and QCFC metrics for all denoising strategies 
 
 Required for inputs: 
+
 
 
 ## Step 5: Run slurm_summarise_metadata.sh
