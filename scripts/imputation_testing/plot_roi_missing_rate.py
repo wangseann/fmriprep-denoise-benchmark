@@ -45,5 +45,5 @@ def main():
 if __name__ == "__main__":
     main()
 
-    #python plot_roi_missing_rate.py /home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics/ds000228_04.03.25/brain_visualization/ds000228/fmriprep-20.2.7/version_B_all_subjects_avg_missing_per_roi.tsv
+    #python plot_roi_missing_rate.py /home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-5.08.25/NaN_figures_1.2.3dev_noDVARs/ds000228/fmriprep-25.0.0/version_A_all_subjects_avg_missing_per_roi.tsv
 

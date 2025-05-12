@@ -2,14 +2,14 @@
 ###############################################################################
 # metrics_array.sh – one task per (metric, strategy)
 ###############################################################################
-#SBATCH --job-name=lts_metrics_%A_%a
+#SBATCH --job-name=dev_metrics_%A_%a
 #SBATCH --account=def-cmoreau
 #SBATCH --time=15:00:00
 #SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=8G
 #SBATCH --array=0-26                 # 3 metrics × 9 strategies 0-8,9-17,18-26
-#SBATCH --output=/home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/generate_metrics/slurm/logs/parallelized_lts.%a.out
-#SBATCH --error=/home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/generate_metrics/slurm/logs/parallelized_lts.%a.err
+#SBATCH --output=/home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/generate_metrics/slurm/logs/parallelized_dev.%a.out
+#SBATCH --error=/home/seann/scratch/denoise/fmriprep-denoise-benchmark/scripts/generate_metrics/slurm/logs/parallelized_dev.%a.err
 ###############################################################################
 
 set -euo pipefail
@@ -38,12 +38,12 @@ echo "Task $flat  metric=$METRIC  strategy_index=$STRAT_INDEX"
 #   --strategy_index "$STRAT_INDEX"
 
 python /home/seann/scratch/denoise/fmriprep-denoise-benchmark/fmriprep_denoise/features/build_features_test_parallelized.py \
-  /home/seann/scratch/halfpipe_test/25-04-17_ds228_halfpipe-1.2.3_fmriprep-20.2.7/derivatives/denoise \
+  /home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/denoise \
   /home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-5.08.25 \
   --dataset ds000228 \
-  --fmriprep_ver fmriprep-20.2.7 \
+  --fmriprep_ver fmriprep-25.0.0 \
   --atlas schaefer400 \
-  --dimension 426 \
+  --dimension 419 \
   --qc stringent \
   --metric "$METRIC" \
   --strategy_index "$STRAT_INDEX"

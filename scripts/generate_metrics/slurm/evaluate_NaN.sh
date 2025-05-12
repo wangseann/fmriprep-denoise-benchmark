@@ -47,13 +47,13 @@ VERSION_B="/home/seann/scratch/halfpipe_test/test15/derivatives/halfpipe"
 FMRIPREP_VER_B="fmriprep-20.2.7"
 
 # Set the output directory.
-OUTPUT_DIR="/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics/ds000228/brain_visualization"
+OUTPUT_DIR="/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-5.08.25/ds000228_2"
 
 # Set atlas, dimension, dataset, and pipeline.
 ATLAS="Schaefer2018"
 DIMENSION="434"
 DATASET="ds000228"
-PIPELINE="corrMatrixMotion"
+PIPELINE="simple"
 
 # Path to the atlas image (NIfTI) to compute centroids.
 ATLAS_IMG="/home/seann/projects/def-cmoreau/All_user_common_folder/atlas/atlas_enigma/atlas-Schaefer2018Combined_dseg.nii.gz"

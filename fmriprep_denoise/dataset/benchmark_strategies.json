@@ -5,6 +5,10 @@
     "simple": {
         "denoise_strategy": "simple"
     },
+    "simple+wmcsf": {
+        "denoise_strategy": "simple",
+        "wm_csf": "basic"
+    },
     "simple+gsr": {
         "denoise_strategy": "simple",
         "global_signal": "basic"
@@ -13,6 +17,12 @@
         "denoise_strategy": "scrubbing",
         "fd_threshold": 0.5,
         "std_dvars_threshold": null
+    },
+    "scrubbing.5+wmcsf": {
+        "denoise_strategy": "scrubbing",
+        "fd_threshold": 0.5,
+        "std_dvars_threshold": null,
+        "wm_csf": "basic"
     },
     "scrubbing.5+gsr": {
         "denoise_strategy": "scrubbing",

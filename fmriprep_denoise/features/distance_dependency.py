@@ -81,9 +81,9 @@ def get_centroid(atlas_name, dimension, excluded_rois_path=None):
     if atlas_name not in ATLAS_METADATA:
         raise NotImplementedError(f"Atlas '{atlas_name}' is not supported.")
 
-    atlas_tsv_path = f"/home/seann/projects/def-cmoreau/All_user_common_folder/atlas/atlas_enigma/atlas-{atlas_name}Combined_dseg.tsv"
-    atlas_img_path = f"/home/seann/projects/def-cmoreau/All_user_common_folder/atlas/atlas_enigma/atlas-{atlas_name}Combined_dseg.nii.gz"
-    centroid_tsv_path = f"/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-4.17.25/ds000228/fmriprep-25.0.0/atlas-{atlas_name}Combined_centroids.tsv"
+    atlas_tsv_path = f"/home/seann/projects/def-cmoreau/All_user_common_folder/atlas/atlas_enigma/atlas-Schaefer2018Combined_dseg.tsv"
+    atlas_img_path = f"/home/seann/projects/def-cmoreau/All_user_common_folder/atlas/atlas_enigma/atlas-Schaefer2018Combined_dseg.nii.gz"
+    centroid_tsv_path = f"/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-4.17.25/ds000228/fmriprep-25.0.0/atlas-Schaefer2018Combined_centroids.tsv"
 
     if not Path(centroid_tsv_path).is_file():
         print(f"Loading ROI labels from TSV: {atlas_tsv_path}")

@@ -15,9 +15,10 @@ import itertools
 # fmriprep_versions = ["fmriprep-20.2.1lts", "fmriprep-20.2.5lts"]
 
 
-qc_names = ["minimal"]
+qc_names = ["stringent"]
 datasets = ["ds000228"]
-fmriprep_versions = ["fmriprep-25.0.0", "fmriprep-20.2.7"]
+fmriprep_versions = ["fmriprep-20.2.7"]
+# fmriprep_versions = ["fmriprep-25.0.0", "fmriprep-20.2.7"]
 
 
 def parse_args():

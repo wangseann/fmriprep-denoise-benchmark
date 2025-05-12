@@ -43,6 +43,8 @@ FEATURE_RENAME_MAP = {
     "corrMatrix4": "simple+gsr",
     "corrMatrix2": "scrubbing.5+gsr",
     "corrMatrix1": "scrubbing.5",
+    "corrMatrix7": "simple+wmcsf",
+    "corrMatrix8": "scrubbing.5+wmcsf",
 }
 
 

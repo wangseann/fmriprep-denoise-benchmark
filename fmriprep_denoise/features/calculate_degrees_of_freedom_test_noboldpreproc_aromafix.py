@@ -45,11 +45,12 @@ def expand_strategy_columns(strategy_name, df, parameters, subject_id=None, spec
     # Get denoise strategy if defined
     strat = parameters.get("denoise_strategy", None)
     include_gsr = "global_signal" in parameters
+    include_wmcsf = parameters.get("wm_csf") == "basic"
 
     if strat == "simple":
         motion_bases = ["trans_x", "trans_y", "trans_z", "rot_x", "rot_y", "rot_z"]
         motion_cols = [col for col in df.columns if any(col.startswith(base) for base in motion_bases)]
-        wmcsf_cols = []  # Exclude WM/CSF
+        wmcsf_cols = ["white_matter", "csf"] if include_wmcsf else []  # Include WM/CSF if specified
         cosine_cols = []  # Gaussian convolution used
 
         cols = motion_cols + wmcsf_cols + cosine_cols
@@ -59,7 +60,7 @@ def expand_strategy_columns(strategy_name, df, parameters, subject_id=None, spec
     elif strat == "scrubbing":
         motion_bases = ["trans_x", "trans_y", "trans_z", "rot_x", "rot_y", "rot_z"]
         motion_cols = [col for col in df.columns if any(col.startswith(base) for base in motion_bases)]
-        wmcsf_cols = []  
+        wmcsf_cols = ["white_matter", "csf"] if include_wmcsf else []  # Include WM/CSF if specified
         cosine_cols = []  
 
         scrub_cols = []  
@@ -69,7 +70,6 @@ def expand_strategy_columns(strategy_name, df, parameters, subject_id=None, spec
             cols.append("global_signal")
 
     elif strat == "compcor":
-      
         compcor_cols = [col for col in df.columns if col.startswith("c_comp_cor_0")]
         cols = compcor_cols[:5]  # (c_comp_cor_00 to c_comp_cor_04)
 
@@ -401,8 +401,8 @@ def main():
     output_root.mkdir(exist_ok=True, parents=True)
     logging.debug("Output directory exists: %s", output_root)
 
-    path_movement = output_root / f"dataset-{dataset_name}_desc-movement_phenotype_HALFpipe.tsv"
-    path_dof = output_root / f"dataset-{dataset_name}_desc-confounds_phenotype.HALFpipe.tsv"
+    path_movement = output_root / f"dataset-{dataset_name}_desc-movement_phenotype.tsv"
+    path_dof = output_root / f"dataset-{dataset_name}_desc-confounds_phenotype.tsv"
 
     logging.info("Fetching confounds derivative data.")
     data = fetch_fmriprep_derivative(dataset_name, participant_tsv, fmriprep_path, specifier)

@@ -36,14 +36,26 @@ logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 #     (2, 3): "aroma+gsr",
 # }
 
+# GRID_LOCATION = {
+#     (0, 0): "baseline",
+#     (0, 2): "simple",
+#     (0, 3): "simple+gsr",
+#     (1, 0): "scrubbing.5",
+#     (1, 1): "scrubbing.5+gsr",
+#     (2, 0): "compcor",
+#     (2, 2): "aroma",
+# }
+
 GRID_LOCATION = {
     (0, 0): "baseline",
     (0, 2): "simple",
     (0, 3): "simple+gsr",
-    (1, 0): "scrubbing.5",
-    (1, 1): "scrubbing.5+gsr",
+    (1, 0): "simple+wmcsf",
+    (1, 1): "scrubbing.5",
+    (1, 2): "scrubbing.5+gsr",
+    (1, 3): "scrubbing.5+wmcsf",
     (2, 0): "compcor",
-    (2, 2): "aroma",
+    (2, 1): "aroma",
 }
 
 # GRID_LOCATION = {
@@ -174,8 +186,8 @@ def prepare_qcfc_plotting(dataset, fmriprep_version, atlas_name, dimension, path
     # "fmriprep-20.2.7": "/home/seann/scratch/halfpipe_test/test15/derivatives_3.24.2025/denoise_0.8subjectthreshold/rois_dropped.csv",
     # }
     excluded_rois_paths = {
-    "fmriprep-25.0.0": "/home/seann/scratch/halfpipe_test/test14/derivatives/denoise_0.8subjectthreshold/rois_dropped.csv",
-    "fmriprep-20.2.7": "/home/seann/scratch/halfpipe_test/test15/derivatives/denoise_0.8subjectthreshold/rois_dropped.csv",
+    "fmriprep-25.0.0": "/home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/denoise/rois_dropped.csv",
+    "fmriprep-20.2.7": "/home/seann/scratch/halfpipe_test/25-04-17_ds228_halfpipe-1.2.3_fmriprep-20.2.7/derivatives/denoise/rois_dropped.csv",
     }
     excluded_rois_path = excluded_rois_paths.get(fmriprep_version, None)
 
