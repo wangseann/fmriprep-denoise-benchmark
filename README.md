@@ -113,12 +113,15 @@ Required for inputs: Please adjust these flags passed to the function call in th
 4. --specifier=<place specifier here> (eg. task-pixar for sub-pixar001_task-pixar_desc-confounds_timeseries.tsv in fmriprep derivatives folder)
 5. --participants_tsv /path/to/your/dataset/participants.tsv
 
+Please also ensure that benchmark_strategies.json contains all the denoising strategies you desire to test. 
 
 ## Step 4: Run metrics_heavy_resource_parallelized.sh
 
 We can now generate the denoising benchmark metrics for each strategy. 
 
-Required for inputs:
+This script will calculate connectome, modularity, and QCFC metrics for all denoising strategies 
+
+Required for inputs: 
 
 
 ## Step 5: Run slurm_summarise_metadata.sh
