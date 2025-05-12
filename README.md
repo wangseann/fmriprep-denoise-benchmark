@@ -212,8 +212,6 @@ excluded_strategies = []#["compcor", "aroma"]
 
 #please adjust path_root to /path/to/your/outputs/denoise-metrics
 <pre><code>
-
-
 if __name__ == "__main__":
   path_root = Path("/home/seann/scratch/denoise/fmriprep-denoise-benchmark/outputs/denoise-metrics-atlas.5-5.08.25") 
  
