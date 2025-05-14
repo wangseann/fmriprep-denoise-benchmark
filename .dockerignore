@@ -1,0 +1,24 @@
+# Ignore output folders
+outputs*/
+denoise/
+plots/
+logs/
+giga_timeseries/
+data/
+
+# Python junk
+__pycache__/
+*.pyc
+
+# Container + batch artifacts
+*.sif
+*.out
+*.err
+*.log
+
+# Figures and raw TSV outputs
+*.png
+*.tsv
+
+# macOS
+.DS_Store

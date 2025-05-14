@@ -141,7 +141,7 @@ def _get_connectome_metric_paths(dataset, fmriprep_version, metric, atlas_name, 
     labels = [file.name.split(f"_{metric}")[0] for file in files]
     return files, labels
 
-def prepare_qcfc_plotting(dataset, fmriprep_version, atlas_name, dimension, path_root):
+def prepare_qcfc_plotting(dataset, fmriprep_version, atlas_name, dimension, path_root, excluded_rois_path):   
     """
     Generate three summary metrics for plotting:
         - significant correlation between motion and edges
@@ -181,18 +181,6 @@ def prepare_qcfc_plotting(dataset, fmriprep_version, atlas_name, dimension, path
         dataset, fmriprep_version, "qcfc", atlas_name, dimension, path_root
     )
 
-    # excluded_rois_paths = {
-    # "fmriprep-25.0.0": "/home/seann/scratch/halfpipe_test/test14/derivatives_3.25.2025/denoise_0.8subjectthreshold/rois_dropped.csv",
-    # "fmriprep-20.2.7": "/home/seann/scratch/halfpipe_test/test15/derivatives_3.24.2025/denoise_0.8subjectthreshold/rois_dropped.csv",
-    # }
-    excluded_rois_paths = {
-    "fmriprep-25.0.0": "/home/seann/scratch/halfpipe_test/25-04-25_ds228_halfpipe-1.2.3_fmriprep-25.0.0_dvars-corrected/derivatives/denoise/rois_dropped.csv",
-    "fmriprep-20.2.7": "/home/seann/scratch/halfpipe_test/25-04-17_ds228_halfpipe-1.2.3_fmriprep-20.2.7/derivatives/denoise/rois_dropped.csv",
-    }
-    excluded_rois_path = excluded_rois_paths.get(fmriprep_version, None)
-
-
-
     for p, label in zip(file_qcfc, qcfc_labels):
         label = label.replace(f"dataset-{dataset}_", "")
         # significant correlation between motion and edges
@@ -228,12 +216,7 @@ def prepare_qcfc_plotting(dataset, fmriprep_version, atlas_name, dimension, path
         # distance dependency
         cur_atlas_name = label.split("atlas-")[-1].split("_")[0]
         cur_dimension = label.split("nroi-")[-1].split("_")[0]
-        # pairwise_distance = get_atlas_pairwise_distance(cur_atlas_name, cur_dimension)
-        # pairwise_distance = get_atlas_pairwise_distance(
-        #     cur_atlas_name,
-        #     cur_dimension,
-        #     excluded_rois_path="/home/seann/scratch/halfpipe_test/test14/derivatives/denoise_0.9subjectthreshold/rois_dropped.csv"
-        # )
+
 
         pairwise_distance = get_atlas_pairwise_distance(
             cur_atlas_name,
@@ -241,7 +224,6 @@ def prepare_qcfc_plotting(dataset, fmriprep_version, atlas_name, dimension, path
             excluded_rois_path=excluded_rois_path
         )
         cols = qcfc.columns
-        # corr_distance_qcfc, _ = spearmanr(pairwise_distance.iloc[:, -1], qcfc)
         condensed_distances = pairwise_distance["distance"].values
 
         # Debug safety check
@@ -257,12 +239,6 @@ def prepare_qcfc_plotting(dataset, fmriprep_version, atlas_name, dimension, path
         print("NaNs in QCFC?", qcfc.isna().any().any())
         print("Infs in distance?", np.isinf(condensed_distances).any())
         print("All distances constant?", np.all(condensed_distances == condensed_distances[0]))
-
-        # corr_distance_qcfc, _ = spearmanr(condensed_distances, qcfc)
-       
-        # corr_distance_qcfc = pd.DataFrame(
-        #     corr_distance_qcfc[1:, 0], index=cols, columns=[label]
-        # )
 
         results = []
         for col in qcfc.columns:
@@ -399,47 +375,6 @@ def _qcfc_bygroup(metric, p):
     )
     df.columns = new_col
     return df
-
-
-# def _calculate_corr_modularity(modularity, movement, label):
-#     """Calculate correlation between motion and network modularity by groups."""
-#     # motion and modularity
-#     corr_modularity = []
-#     z_movement = movement[["mean_framewise_displacement", "age", "gender"]].apply(
-#         zscore
-#     )
-
-#     # full sample
-#     for strategy, value in modularity.iloc[:, 1:].iteritems():
-#         current_df = partial_correlation(
-#             value,
-#             movement["mean_framewise_displacement"],
-#             z_movement[["age", "gender"]],
-#         )
-#         current_df["strategy"] = strategy
-#         current_df["groups"] = "full_sample"
-#         corr_modularity.append(current_df)
-
-#     # by group
-#     modularity_long = modularity.reset_index().melt(
-#         id_vars=["index", "groups"], var_name="strategy"
-#     )
-#     for (group, strategy), df in modularity_long.groupby(["groups", "strategy"]):
-#         df = df.set_index("index")
-#         current_df = partial_correlation(
-#             df["value"],
-#             movement.loc[df.index, "mean_framewise_displacement"].values,
-#             z_movement.loc[df.index, ["age", "gender"]].values,
-#         )
-#         current_df["strategy"] = strategy
-#         current_df["groups"] = group
-#         corr_modularity.append(current_df)
-
-#     corr_modularity = pd.DataFrame(corr_modularity).set_index(["groups", "strategy"])[
-#         "correlation"
-#     ]
-#     corr_modularity.name = label
-#     return corr_modularity
 
 def _calculate_corr_modularity(modularity, movement, label):
     """Calculate correlation between motion and network modularity by groups."""

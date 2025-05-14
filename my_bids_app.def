@@ -1,0 +1,17 @@
+Bootstrap: docker
+From: python:3.10-slim
+
+%post
+    apt-get update && apt-get install -y git
+    pip install --no-cache-dir numpy pandas scikit-learn nilearn
+
+%environment
+    export PYTHONUNBUFFERED=1
+
+%files
+    cli.py /opt/bids_app/cli.py
+    scripts/ /opt/bids_app/scripts/
+    requirements.txt /opt/bids_app/requirements.txt
+
+%runscript
+    exec python /opt/bids_app/cli.py "$@"

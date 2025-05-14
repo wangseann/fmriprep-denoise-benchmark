@@ -142,14 +142,13 @@ def impute_and_clean(df, column_names):
     cleaned_df = pd.DataFrame(cleaned_values, columns=column_names, index=df.index)
     return cleaned_df
 
-def main():
+def run(input_dir: str, output_dir: str, task: str, space: str, nroi: int, atlas: str, nan_threshold: float = 0.5):
     setup_logging()
-    args = parse_args()
-    input_dir = Path(args.input_dir)
-    output_dir = Path(args.output_dir)
+    input_dir = Path(input_dir)
+    output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    atlas_tsv = Path(args.atlas)
+    atlas_tsv = Path(atlas)
     full_roi_list = load_full_roi_list(atlas_tsv)
     logging.info("Loaded full ROI list with %d ROIs.", len(full_roi_list))
 
@@ -166,7 +165,7 @@ def main():
                                     index=roi_nan_df["roi_index"].astype(int))
     else:
         logging.info("PASS 1: Calculating global missing rate across %d files...", len(ts_files))
-        global_nan_rate = compute_global_nan_mask(ts_files, args.nroi)
+        global_nan_rate = compute_global_nan_mask(ts_files, nroi)
         roi_indices = [int(i) for i in global_nan_rate.index]
         roi_names = []
         for i in roi_indices:
@@ -182,15 +181,15 @@ def main():
         })
         roi_nan_df.to_csv(roi_nan_stats_path, index=False)
 
-    rois_to_drop = global_nan_rate[global_nan_rate > args.nan_threshold].index.tolist()
-    logging.info(f"Dropping {len(rois_to_drop)} ROIs with >{int(args.nan_threshold * 100)}%% missing data: {rois_to_drop}")
+    rois_to_drop = global_nan_rate[global_nan_rate > nan_threshold].index.tolist()
+    logging.info(f"Dropping {len(rois_to_drop)} ROIs with >{int(nan_threshold * 100)}%% missing data: {rois_to_drop}")
     dropped_roi_df = pd.DataFrame({
         "roi_index": [int(i) for i in rois_to_drop],
         "roi_name": [full_roi_list[int(i)] for i in rois_to_drop]
     })
     dropped_roi_df.to_csv(output_dir / "rois_dropped.csv", index=False)
-
-    surviving_roi_indices = sorted(set(range(args.nroi)) - set(map(int, rois_to_drop)))
+    
+    surviving_roi_indices = sorted(set(range(nroi)) - set(map(int, rois_to_drop)))
     surviving_roi_names = [full_roi_list[i] for i in surviving_roi_indices]
     surviving_roi_strs = [str(i) for i in surviving_roi_indices]
 
@@ -214,8 +213,8 @@ def main():
         if "correlation_matrix" in fname or "covariance_matrix" in fname:
             continue
 
-        subject, feature, atlas = parse_filename(fname)
-        if not (subject and feature and atlas):
+        subject, feature, atlas_name = parse_filename(fname)
+        if not (subject and feature and atlas_name):
             logging.warning(f"Could not parse {fname}; skipping.")
             continue
         if feature not in FEATURE_RENAME_MAP:
@@ -225,10 +224,10 @@ def main():
 
         try:
             df = load_timeseries(file_path)
-            df = check_orientation_and_add_header(df, args.nroi)
+            df = check_orientation_and_add_header(df, nroi)
 
             # Ensure that all expected ROI columns are present.
-            for roi in map(str, range(args.nroi)):
+            for roi in map(str, range(nroi)):
                 if roi not in df.columns:
                     df[roi] = np.nan
 
@@ -277,8 +276,8 @@ def main():
                 logging.warning(f"{subject}: {n_nans_post} NaNs remain after cleaning!")
 
             final_name = (
-                f"{subject}_task-{args.task}_space-{args.space}_"
-                f"atlas-{atlas}_nroi-{df_clean.shape[1]}_"
+                f"{subject}_task-{task}_space-{space}_"
+                f"atlas-{atlas_name}_nroi-{df_clean.shape[1]}_"
                 f"desc-{desc_value}_timeseries.tsv"
             )
             subject_folder = output_dir / subject
@@ -313,6 +312,11 @@ def main():
     logging.info(f"Saved global imputation counts to {impute_counts_csv_path}")
 
     logging.info("All files processed.")
+
+def main():
+    args = parse_args()
+    run(args.input_dir, args.output_dir, args.task, args.space, args.nroi, args.atlas, args.nan_threshold)
+
 
 if __name__ == "__main__":
     main()

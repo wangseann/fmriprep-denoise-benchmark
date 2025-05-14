@@ -388,15 +388,13 @@ def parse_args():
     parser.add_argument("--participants_tsv", type=str, help="Path to participants.tsv file (BIDS).")
     return parser.parse_args()
 
-def main():
-    print("Logging main function started", flush=True)
-    args = parse_args()
-    logging.debug("Parsed arguments: %s", vars(args))
-    dataset_name = args.dataset_name
-    specifier = args.specifier
-    fmriprep_path = Path(args.fmriprep_path)
-    participant_tsv = Path(args.participants_tsv) if args.participants_tsv else None
-    output_root = Path(args.output_path)
+def run(output_path: str, fmriprep_path: str, dataset_name: str, specifier: str, participants_tsv: str):
+    print("Logging run function started", flush=True)
+    logging.debug("run() called with arguments: output_path=%s, fmriprep_path=%s, dataset_name=%s, specifier=%s, participants_tsv=%s",
+                  output_path, fmriprep_path, dataset_name, specifier, participants_tsv)
+    fmriprep_path = Path(fmriprep_path)
+    participant_tsv = Path(participants_tsv) if participants_tsv else None
+    output_root = Path(output_path)
 
     output_root.mkdir(exist_ok=True, parents=True)
     logging.debug("Output directory exists: %s", output_root)
@@ -486,4 +484,11 @@ if __name__ == "__main__":
         format="%(asctime)s - %(levelname)s - %(message)s"
     )
     print("Logging main function called", flush=True)
-    main()
+    args = parse_args()
+    run(
+        args.output_path,
+        args.fmriprep_path,
+        args.dataset_name,
+        args.specifier,
+        args.participants_tsv
+    )

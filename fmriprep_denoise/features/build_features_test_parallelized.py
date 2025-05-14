@@ -99,31 +99,50 @@ def _select_strategy_by_index(idx: int):
         raise ValueError(f"strategy_index {idx} out of range 0‑{len(real_keys)-1}")
     return get_prepro_strategy(real_keys[idx])        
 
-
-def main():
-    """Main function."""
+def run(input_path: str, output_path: str, atlas: str, dimension: str, qc: str, metric: str, strategy_index: int, dataset: str, fmriprep_ver: str):
+    """Run the main processing logic with explicit parameters."""
 
     print("Logging main function start message", flush=True)
 
-    args = parse_args()
-    logging.debug("Parsed arguments: %s", vars(args))
-    print(vars(args))
+    logging.debug("Parsed arguments: %s", {
+        "input_path": input_path,
+        "output_path": output_path,
+        "atlas": atlas,
+        "dimension": dimension,
+        "qc": qc,
+        "metric": metric,
+        "strategy_index": strategy_index,
+        "dataset": dataset,
+        "fmriprep_ver": fmriprep_ver,
+    })
 
-    input_path = Path(args.input_path)
-    atlas = args.atlas
-    dimension = args.dimension
+    print({
+        "input_path": input_path,
+        "output_path": output_path,
+        "atlas": atlas,
+        "dimension": dimension,
+        "qc": qc,
+        "metric": metric,
+        "strategy_index": strategy_index,
+        "dataset": dataset,
+        "fmriprep_ver": fmriprep_ver,
+    })
+
+    input_path = Path(input_path)
+    atlas = atlas
+    dimension = dimension
 
     logging.debug("Input path: %s", input_path)
     print(input_path)
 
     # Use overrides if provided, otherwise extract from input_path
-    dataset = args.dataset if args.dataset else input_path.parents[0].name
-    fmriprep_ver = args.fmriprep_ver if args.fmriprep_ver else input_path.name
+    dataset = dataset if dataset else input_path.parents[0].name
+    fmriprep_ver = fmriprep_ver if fmriprep_ver else input_path.name
     logging.debug("Dataset: %s, fMRIPrep version: %s", dataset, fmriprep_ver)
     print(dataset)
     print(fmriprep_ver)
 
-    path_root = Path(args.output_path).absolute()
+    path_root = Path(output_path).absolute()
     output_path = path_root / dataset / fmriprep_ver
     output_path.mkdir(parents=True, exist_ok=True)
     logging.debug("Output path created: %s", output_path)
@@ -162,15 +181,15 @@ def main():
                             copy=False)
 
 
-    if args.strategy_index is None:
+    if strategy_index is None:
         strategy_names = {k: get_prepro_strategy(k)[k] for k in real_keys}
     else:
-        strategy_names = _select_strategy_by_index(args.strategy_index)
+        strategy_names = _select_strategy_by_index(strategy_index)
 
     logging.debug("Retrieved pre-processing strategies: %s", list(strategy_names.keys()))
-    motion_qc = get_qc_criteria(args.qc)
+    motion_qc = get_qc_criteria(qc)
     logging.debug("Motion QC criteria: %s", motion_qc)
-    metric_option = str(args.metric)
+    metric_option = str(metric)
     metrics_to_run = ["connectome", "qcfc", "modularity"] if metric_option == "all" else [metric_option]
     logging.debug("Metric option selected: %s", metric_option)
 
@@ -335,6 +354,21 @@ def main():
 
     logging.info("Final metrics saved to %s", output_file)
 
-if __name__ == "__main__":
+
+def main():
+    """Main function."""
+
     print("Logging main function called", flush=True)
-    main()
+    args = parse_args()
+    
+    run(
+        input_path=args.input_path,
+        output_path=args.output_path,
+        atlas=args.atlas,
+        dimension=args.dimension,
+        qc=args.qc,
+        metric=args.metric,
+        strategy_index=args.strategy_index,
+        dataset=args.dataset,
+        fmriprep_ver=args.fmriprep_ver,
+    )

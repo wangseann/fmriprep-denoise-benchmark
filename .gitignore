@@ -15,6 +15,12 @@ featured.png
 logs/
 outputs*/
 
+*.png
+*.sif
+*.out
+*.err
+*.log
+
 # Jupyterbook
 content/_build
 
